@@ -11,13 +11,13 @@ class Model:
     def load_weight(self):
         pass
 
-    def fit(self):
+    def fit(self, X, y):
         pass
 
-    def predict(self):
+    def predict(self, x):
         pass
 
-    def evaluate(self):
+    def evaluate(self, X, y):
         pass
 
     
