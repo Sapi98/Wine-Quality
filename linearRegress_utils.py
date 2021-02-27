@@ -5,10 +5,10 @@ class Model:
     def __init__(self):
         self.W = None
 
-    def save_weight(self):
+    def save_weight(self, file_name="weight.npy", path=None):
         pass
 
-    def load_weight(self):
+    def load_weight(self, file_name="weight.npy", path=None):
         pass
 
     def fit(self, X, y):
