@@ -12,6 +12,7 @@ class Model:
         pass
 
     def fit(self, X, y):
+        w = self
         pass
 
     def predict(self, x):
