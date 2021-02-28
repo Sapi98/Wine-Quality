@@ -24,7 +24,7 @@ class Model:
         res = (1/X.shape[0])*np.sum(np.square(y - np.dot(self.W.T, X))) + self.l*np.dot(self.W.T, self.W)
         return res
 
-    def gradient(self,X, J):
+    def gradient(self,X, y):
         grad = J*X
         return grad
 
@@ -34,9 +34,10 @@ class Model:
     def fit(self, X, y):
         self.W = np.random((X.shape[1], 1))
 
-        for _ in range(max_iter):
+        for _ in range(self.max_iter):
             J = self.cost(X, y)
-            grad = self.gradient()
+            grad = self.gradient(X, y)
+            self.update_weights(grad)
 
     def predict(self, X):
         pass
