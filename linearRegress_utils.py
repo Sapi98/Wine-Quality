@@ -32,8 +32,12 @@ class Model:
         self.W = self.W - self.alpha*(grad)
         
     def fit(self, X, y):
-        
-        pass
+        self.W = np.random((X.shape[1], 1))
+
+        for _ in range(self.max_iter):
+            J = self.cost(X, y)
+            grad = self.gradient(X, y)
+            self.update_weights(grad)
 
     def predict(self, X):
         pass
