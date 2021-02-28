@@ -31,8 +31,11 @@ class Model:
         pass
 
     def fit(self, X, y):
-        w = self
-        pass
+        self.W = np.random((X.shape[1], 1))
+
+        for _ in range(max_iter):
+            J = self.cost(X, y)
+            grad = self.gradient()
 
     def predict(self, X):
         pass
