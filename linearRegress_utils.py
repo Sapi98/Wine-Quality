@@ -14,9 +14,10 @@ class Model:
         pass
 
     def cost(self, X, y):
-        pass
+        res = 1/X.shape[0](y - np.dot(self.W.T, X)) + 
 
-    def gradient(self, X, y):
+    def gradient(self, J):
+        
         pass
 
     def update_weights(self, grad):
