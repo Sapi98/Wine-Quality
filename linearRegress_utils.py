@@ -32,7 +32,7 @@ class Model:
         self.W = self.W - self.alpha*(grad)
         
     def fit(self, X, y):
-        self.W = np.random((X.shape[1], 1))
+        self.W = np.rand((X.shape[1], 1))
 
         for _ in range(self.max_iter):
             J = self.cost(X, y)
