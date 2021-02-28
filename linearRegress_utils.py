@@ -8,6 +8,9 @@ class Model:
         self.alpha = alpha
         self.l = l
         self.record_cost = []
+        self.pred = None
+        self.record_evaluation_testing = []
+        self.record_evaluation_validation = []
 
     def save_weight(self, file_name="weight.npy", path=None):
         if path != None:
@@ -32,8 +35,8 @@ class Model:
     def update_weights(self, grad):
         self.W = self.W - self.alpha*(grad)
         
-    def fit(self, X, y):
-        self.W = np.rand((X.shape[1], 1))
+    def fit(self, X, y, val_X, val_y, test_X, test_y):
+        self.W = np.rand((X.shape[0], 1))
 
         for _ in range(self.max_iter):
             J = self.cost(X, y)
@@ -42,11 +45,17 @@ class Model:
 
             self.record_cost.append(J)
 
+            self.record_evaluation_validation.append(self.evaluate(val_X, val_y))
+            self.record_evaluation_testing.append(self.evaluate(test_X, test_y))
+
     def predict(self, X):
-        pred = np.dot(self.W.T, X)
-        return pred
+        self.pred = np.dot(self.W.T, X)
 
     def evaluate(self, X, y):
-        
+        self.predict(X)
 
-    
+        mae = np.sum(np.abs(y - self.pred)) / X.shape[0]
+        mse = np.sum(np.square(y - self.pred)) / X.shape[0]
+        rmse = np.sqrt(mse)
+
+        return (mae, mse, rmse)

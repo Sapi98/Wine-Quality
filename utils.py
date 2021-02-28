@@ -7,13 +7,13 @@ def loadData(path):
 def saveResults(path, result):
     pass
 
-class Preprocess:
+"""class Preprocess:
 
     def __init__(self):
         pass
+"""
+def featureNormalization(self):
+    pass
 
-    def featureNormalization(self):
-        pass
-
-    def createRandomMinibatches(self):
-        pass
+def createRandomMinibatches(self):
+    pass
