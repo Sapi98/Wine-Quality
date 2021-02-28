@@ -24,8 +24,8 @@ class Model:
         res = (1/X.shape[0])*np.sum(np.square(y - np.dot(self.W.T, X))) + self.l*np.dot(self.W.T, self.W)
         return res
 
-    def gradient(self,X, J):
-        grad = (2/X.shape[0])*np.sum(-np.dot(X.T, y) + 2*np.dot(X.T, X)*self.W) + 2*l*self.W
+    def gradient(self,X, y, J):
+        grad = (2/X.shape[0])*np.sum(-np.dot(X.T, y) + 2*np.dot(X.T, X)*self.W) + 2*self.l*self.W
         return grad
 
     def update_weights(self, grad):
