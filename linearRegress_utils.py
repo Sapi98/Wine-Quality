@@ -43,9 +43,10 @@ class Model:
             self.record_cost.append(J)
 
     def predict(self, X):
-        pass
+        pred = np.dot(self.W.T, X)
+        return pred
 
     def evaluate(self, X, y):
-        pass
+        
 
     
