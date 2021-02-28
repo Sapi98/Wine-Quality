@@ -7,6 +7,7 @@ class Model:
         self.max_iter = max_iter
         self.alpha = alpha
         self.l = l
+        self.record_cost = []
 
     def save_weight(self, file_name="weight.npy", path=None):
         if path != None:
@@ -24,7 +25,7 @@ class Model:
         res = (1/X.shape[0])*np.sum(np.square(y - np.dot(self.W.T, X))) + self.l*np.dot(self.W.T, self.W)
         return res
 
-    def gradient(self,X, y, J):
+    def gradient(self,X, y):
         grad = (2/X.shape[0])*np.sum(-np.dot(X.T, y) + 2*np.dot(X.T, X)*self.W) + 2*self.l*self.W
         return grad
 
@@ -38,6 +39,8 @@ class Model:
             J = self.cost(X, y)
             grad = self.gradient(X, y)
             self.update_weights(grad)
+
+            self.record_cost.append(J)
 
     def predict(self, X):
         pass
