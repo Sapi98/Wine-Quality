@@ -21,17 +21,18 @@ class Model:
             self.W = np.load(file_name)
 
     def cost(self, X, y):
-        res = 1/X.shape[0](y - np.dot(self.W.T, X)) + 
+        res = (1/X.shape[0])*np.sum(np.square(y - np.dot(self.W.T, X))) + self.l*np.dot(self.W.T, self.W)
+        return res
 
-    def gradient(self, J):
-        
-        pass
+    def gradient(self,X, J):
+        grad = J*X
+        return grad
 
     def update_weights(self, grad):
-        pass
-
+        self.W = self.W - self.alpha*(grad)
+        
     def fit(self, X, y):
-        w = self
+        
         pass
 
     def predict(self, X):
