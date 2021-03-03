@@ -42,9 +42,11 @@ class Model:
 
         if algo == "minibatch":
             minibatches = createRandomMinibatches(X, y, self.minibatch_size)
+            n = len(minibatches)
+            j = 0
             for _ in range(self.max_iter):
-                for minibatch in minibatches:
-                    X, y = minibatch
+                for i in range(n):
+                    X, y = minibatches[i]
                     J = self.cost(X, y)
                     grad = self.gradient(X, y)
                     self.update_weights(grad)
