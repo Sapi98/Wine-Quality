@@ -1,12 +1,14 @@
 import numpy as np
+from utils import *
 
 class Model:
     
-    def __init__(self, max_iter=100, alpha=0.01, l=0):
+    def __init__(self, max_iter=100, alpha=0.01, reg=0, minibatch_size = 16):
         self.W = None
         self.max_iter = max_iter
         self.alpha = alpha
-        self.l = l
+        self.minibatch_size = minibatch_size
+        self.reg = reg
         self.record_cost = []
         self.pred = None
         self.record_evaluation_testing = []
@@ -25,28 +27,32 @@ class Model:
             self.W = np.load(file_name)
 
     def cost(self, X, y):
-        res = (1/X.shape[0])*np.sum(np.square(y - np.dot(self.W.T, X))) + self.l*np.dot(self.W.T, self.W)
+        res = (1/X.shape[0])*np.sum(np.square(y - np.dot(self.W.T, X))) + self.reg * np.dot(self.W.T, self.W)
         return res
 
     def gradient(self,X, y):
-        grad = (2/X.shape[0])*np.sum(-np.dot(X.T, y) + 2*np.dot(X.T, X)*self.W) + 2*self.l*self.W
+        grad = (2/X.shape[0]) * np.sum(-np.dot(X.T, y) + 2 * np.dot(X.T, X) * self.W) + 2 * self.reg * self.W
         return grad
 
     def update_weights(self, grad):
         self.W = self.W - self.alpha*(grad)
         
-    def fit(self, X, y, val_X, val_y, test_X, test_y):
+    def fit(self, X, y, test_X, test_y, algo="minibatch"):
         self.W = np.random.rand((X.shape[0], 1))
 
-        for _ in range(self.max_iter):
-            J = self.cost(X, y)
-            grad = self.gradient(X, y)
-            self.update_weights(grad)
+        if algo == "minibatch":
+            minibatches = createRandomMinibatches(X, y, self.minibatch_size)
+            for _ in range(self.max_iter):
+                for minibatch in minibatches:
+                    X, y = minibatch
+                    J = self.cost(X, y)
+                    grad = self.gradient(X, y)
+                    self.update_weights(grad)
 
-            self.record_cost.append(J)
+                    self.record_cost.append(J)
 
-            self.record_evaluation_validation.append(self.evaluate(val_X, val_y))
-            self.record_evaluation_testing.append(self.evaluate(test_X, test_y))
+                    self.record_evaluation_validation.append(self.evaluate(val_X, val_y))
+                    self.record_evaluation_testing.append(self.evaluate(test_X, test_y))
 
     def predict(self, X):
         self.pred = np.dot(self.W.T, X)
