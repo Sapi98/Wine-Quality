@@ -7,7 +7,7 @@ result_path = 'result.txt'
 
 def run():
     #Load Data Set
-
+    
     # Make Train-Test Split
 
     # Training Data Visualization
