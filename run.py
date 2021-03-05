@@ -6,7 +6,7 @@ data_path = 'winequality-red.csv'
 result_path = 'result.txt'
 
 def run():
-    #Load Data Set
+    # Load Data Set
     
     # Make Train-Test Split
 
