@@ -19,8 +19,8 @@ def saveResults(path, result):
         pass
 """
 def featureNormalization(self, X):
-    mean = X.mean()
-    sd = X.std()
+    mean = X.mean(axis=0)
+    sd = X.std(axis=0)
     X = X - mean / sd
 
     return X
@@ -33,7 +33,7 @@ def shuffle(X, y):
     
     return X, y
 
-def splitData(X, y, train=0.7, test=0.15):
+def splitData(X, y, train=0.7):
     X, y = shuffle(X, y)
 
     n = X.shape[0]

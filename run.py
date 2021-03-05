@@ -6,4 +6,16 @@ data_path = 'winequality-red.csv'
 result_path = 'result.txt'
 
 def run():
-    X, y = loadData(data_path)
+    #Load Data Set
+
+    # Make Train-Test Split
+
+    # Training Data Visualization
+
+    # Trigger Linear Regression
+
+    # Save Model
+
+    # Save Results
+
+    # Visualize results (Training Accuracy, Validation Accuracy and Testing Accuracy)

@@ -45,6 +45,7 @@ class Model:
             n = len(minibatches)
             j = 0
             for _ in range(self.max_iter):
+                
                 for i in range(n):
                     X, y = minibatches[i]
                     J = self.cost(X, y)
