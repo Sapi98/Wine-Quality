@@ -8,12 +8,11 @@ import seaborn as sb
 
 def visualizeData(data):
     for i in range(data.shape[1]-1 // 4):
-        var = data.keys()[i*4:(i+1)*4]
-        print(var)
+        var = data.columns[i*4:(i+1)*4]
         sb.pairplot(data, vars=var, hue='quality', diag_kind='hist')
         plt.savefig('data_'+str(i)+'.png')
     
-    var = data.keys()[(data.shape[1]-1 // 4)*4:-1]
+    var = data.columns[(data.shape[1]-1 // 4)*4:]
     sb.pairplot(data, vars=var, hue='quality', diag_kind='hist')
     plt.savefig('data_last.png')
     
