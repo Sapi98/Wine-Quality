@@ -68,3 +68,4 @@ class Model:
         rmse = np.sqrt(mse)
 
         return (mae, mse, rmse)
+        
