@@ -5,4 +5,6 @@ import seaborn as sb
 # scatter plot heatmap
 # contour plot
 # line plot for performance
-
+def visualizeData(X, y):
+    
+    

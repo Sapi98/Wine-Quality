@@ -37,9 +37,9 @@ class Model:
     def update_weights(self, grad):
         self.W = self.W - self.alpha*(grad)
         
-    def fit(self, X, y, test_X, test_y, algo="minibatch"):
+    def fit(self, X, y, test_X, test_y, val_x = None, val_y = None, mode = "normal", algo="minibatch"):
         self.W = np.random.rand((X.shape[0], 1))
-
+        
         if algo == "minibatch":
             minibatches = createRandomMinibatches(X, y, self.minibatch_size)
             n = len(minibatches)
@@ -54,7 +54,7 @@ class Model:
 
                     self.record_cost.append(J)
 
-                    self.record_evaluation_validation.append(self.evaluate(val_X, val_y))
+                    # self.record_evaluation_validation.append(self.evaluate(val_X, val_y))
                     self.record_evaluation_testing.append(self.evaluate(test_X, test_y))
 
     def predict(self, X):
@@ -68,4 +68,3 @@ class Model:
         rmse = np.sqrt(mse)
 
         return (mae, mse, rmse)
-        
