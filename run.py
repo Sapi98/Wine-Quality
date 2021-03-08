@@ -9,7 +9,7 @@ def run():
     # Load Data Set
 
     data, X, y = loadData(data_path)
-    
+    # print(data)
     # Make Train-Test Split
 
     # Training Data Visualization
@@ -22,3 +22,4 @@ def run():
     # Save Results
 
     # Visualize results (Training Accuracy, Validation Accuracy and Testing Accuracy)
+run()
