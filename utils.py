@@ -1,14 +1,15 @@
 import numpy as np
 import pandas as pd
 from math import floor, ceil
+import pandas as pd
 
 def loadData(path):
-    data = np.genfromtxt(path, delimiter=',')
+    #data = np.genfromtxt(path, delimiter=',')
+    data = pd.read_csv(path)
+    X = np.array(data)[1:,:-1]
+    y = np.reshape(np.array(data)[1:,-1], (X.shape[0], 1))
 
-    X = data[1:,:-1]
-    y = np.reshape(data[1:,-1], (X.shape[0], 1))
-
-    return (X, y)
+    return (data, X, y)
 
 def saveResults(path, result):
     pass

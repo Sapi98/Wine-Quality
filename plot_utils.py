@@ -5,6 +5,6 @@ import seaborn as sb
 # scatter plot heatmap
 # contour plot
 # line plot for performance
-def visualizeData(X, y):
-    
-    
+
+def visualizeData(data):
+    sb.pairplot(data, hue='quality', diag_kind='hist')    

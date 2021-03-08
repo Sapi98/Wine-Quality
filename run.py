@@ -7,10 +7,13 @@ result_path = 'result.txt'
 
 def run():
     # Load Data Set
+
+    data, X, y = loadData(data_path)
     
     # Make Train-Test Split
 
     # Training Data Visualization
+    visualizeData(data)
 
     # Trigger Linear Regression
 
