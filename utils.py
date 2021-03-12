@@ -1,14 +1,15 @@
 import numpy as np
 import pandas as pd
 from math import floor, ceil
+import pandas as pd
 
 def loadData(path):
-    data = np.genfromtxt(path, delimiter=',')
+    #data = np.genfromtxt(path, delimiter=',')
+    data = pd.read_csv(path)
+    X = np.array(data)[1:,:-1]
+    y = np.reshape(np.array(data)[1:,-1], (X.shape[0], 1))
 
-    X = data[1:,:-1]
-    y = np.reshape(data[1:,-1], (X.shape[0], 1))
-
-    return (X.T, y)
+    return (data, X, y)
 
 def saveResults(path, result):
     pass
@@ -18,8 +19,12 @@ def saveResults(path, result):
     def __init__(self):
         pass
 """
-def featureNormalization(self):
-    pass
+def featureNormalization(self, X):
+    mean = X.mean(axis=0)
+    sd = X.std(axis=0)
+    X = X - mean / sd
+
+    return X
 
 def shuffle(X, y):
     p = np.random.permutation(y.size)
@@ -37,14 +42,25 @@ def splitData(X, y, train=0.7):
     train_X = X[:floor(train*n)]
     train_Y = y[:floor(train*n)]
 
-    test_X = X[floor(train*n):]
-    test_Y = y[floor(train*n):]
+    test_X = X[floor(train * n):]
+    test_Y = y[floor(train * n):]
 
     return (train_X, train_Y, test_X, test_Y)
 
-def createRandomMinibatches(self):
-    pass
+def createRandomMinibatches(self, X, y, minibatch_size=16):
+    minibatches = []
+    
+    n = y.size // minibatch_size
+    
+    X, y = shuffle(X, y)
 
+    for i in range(n):
+        minibatch = (X[i*minibatch_size:(i+1)*minibatch_size, :], y[i*minibatch_size:(i+1)*minibatch_size, :])
+        minibatches.append(minibatch)
+
+    minibatches.append(X[n*minibatch_size:, :], y[n*minibatch_size:, :])
+
+    return minibatches
 
 if __name__ == "__main__":
     x = [[1,2,3],[4,5,6],[7,8,9]]
