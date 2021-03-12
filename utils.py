@@ -6,10 +6,8 @@ import pandas as pd
 def loadData(path):
     #data = np.genfromtxt(path, delimiter=',')
     data = pd.read_csv(path)
-    X = np.array(data)[1:,:-1]
-    y = np.reshape(np.array(data)[1:,-1], (X.shape[0], 1))
 
-    return (data, X, y)
+    return data
 
 def saveResults(path, result):
     pass
@@ -26,26 +24,41 @@ def featureNormalization(self, X):
 
     return X
 
-def shuffle(X, y):
-    p = np.random.permutation(y.size)
+def shuffle(X, y=None):
+    p = np.random.permutation(X.shape[0])
 
     X = X[p,:]
-    y = np.reshape(y[p], (y.size, 1))
+    
+    if y != None:
+        y = np.reshape(y[p], (X.shape[0], 1))
     
     return X, y
 
-def splitData(X, y, train=0.7):
-    X, y = shuffle(X, y)
+def splitData(data, train=0.7):
+    data_array = np.array(data)[1:]
+    train_data = None
+    
+    X, y = shuffle(data_array)
 
     n = X.shape[0]
 
-    train_X = X[:floor(train*n)]
-    train_Y = y[:floor(train*n)]
+    if y != None:
+        train_X = X[:floor(train*n)]
+        train_Y = np.reshape(y[:floor(train*n)], (train_X.shape[0], 1))
 
-    test_X = X[floor(train * n):]
-    test_Y = y[floor(train * n):]
+        test_X = X[floor(train * n):]
+        test_Y = np.reshape(y[floor(train * n):], (test_X.shape[0], 1))
 
-    return (train_X, train_Y, test_X, test_Y)
+    else:
+        train_X = data_array[:floor(train*n),:-1]
+        train_Y = np.reshape(data_array[:floor(train*n),-1], (train_X.shape[0], 1))
+
+        test_X = data_array[floor(train * n):, :-1]
+        test_Y = np.reshape(data_array[floor(train * n):, -1], (test_X.shape[0], 1))
+
+        train_data = pd.DataFrame(data_array, columns=data.columns)
+
+    return (train_data, train_X, train_Y, test_X, test_Y)
 
 def createRandomMinibatches(self, X, y, minibatch_size=16):
     minibatches = []
