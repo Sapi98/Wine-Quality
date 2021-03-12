@@ -29,7 +29,7 @@ def shuffle(X, y):
     
     return X, y
 
-def splitData(X, y, train=0.7, test=0.15):
+def splitData(X, y, train=0.7):
     X, y = shuffle(X, y)
 
     n = X.shape[0]
@@ -37,8 +37,8 @@ def splitData(X, y, train=0.7, test=0.15):
     train_X = X[:floor(train*n)]
     train_Y = y[:floor(train*n)]
 
-    test_X = X[floor((train+val)*n):]
-    test_Y = y[floor((train+val)*n):]
+    test_X = X[floor(train*n):]
+    test_Y = y[floor(train*n):]
 
     return (train_X, train_Y, test_X, test_Y)
 
