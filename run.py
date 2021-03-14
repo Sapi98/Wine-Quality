@@ -4,6 +4,9 @@ from utils import *
 
 data_path = 'winequality-red.csv'
 result_path = 'result.txt'
+max_iter = 1000
+alpha = [0.01, 0.03, 0.05, 0.1]
+reg = [0, 0.1, 0.3, 0.5, 0.7]
 
 def run( max_iter=100, alpha=0.01, reg=0, minibatch_size = 16, val_flag=True):
     # Load Data Set
@@ -17,14 +20,14 @@ def run( max_iter=100, alpha=0.01, reg=0, minibatch_size = 16, val_flag=True):
     visualizeData(train_data)
 
     # Trigger Linear Regression
-    model  = Model( max_iter, alpha, reg, minibatch_size, val_flag)
     
     if val_flag:
         for a in alpha:
             for r in reg:
                 for s in minibatch_size:
                     train_X, train_y, val_X, val_y = generateValidation(train_X, train_y)
-                    model.fit()
+                    model  = Model( max_iter, a, r, s, val_flag)
+                    model.fit(train_X, train_y, test_X, test_y, val_X, val_y)
 
     # Save Model
     model.save_weight()
