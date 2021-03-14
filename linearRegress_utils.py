@@ -3,26 +3,31 @@ from utils import *
 
 class Model:
     
-    def __init__(self, max_iter=100, alpha=0.01, reg=0, minibatch_size = 16):
+    def __init__(self, max_iter=100, alpha=0.01, reg=0, minibatch_size = 16, val_flag=True):
         self.W = None
         self.max_iter = max_iter
         self.alpha = alpha
         self.minibatch_size = minibatch_size
         self.reg = reg
-        self.record_cost = []
+        self.record_cost = str(max_iter) + '_' + str(alpha) + '_' + str(reg) + '_' + str(minibatch_size) + '_' + 'cost_record.txt'
         self.pred = None
-        self.record_evaluation_testing = []
-        self.record_evaluation_validation = []
+        self.record_evaluation_testing = str(max_iter) + '_' + str(alpha) + '_' + str(reg) + '_' + str(minibatch_size) + '_' + 'testing_record.txt'
+        self.record_evaluation_validation = str(max_iter) + '_' + str(alpha) + '_' + str(reg) + '_' + str(minibatch_size) + '_' + 'val_record.txt'
+        self.val_flag = val_flag
+
+        if not val_flag:
+            self.record_cost = 'realtime_' + self.record_cost
+            self.record_evaluation_testing = 'realtime_' + self.record_evaluation_testing
 
     def save_weight(self, file_name="weight.npy", path=None):
         if path != None:
-            np.save(path, self.W)
+            np.save(path+'/'+file_name, self.W)
         else:
             np.save(file_name, self.W)
 
     def load_weight(self, file_name="weight.npy", path=None):
         if path != None:
-            self.W = np.load(path)
+            self.W = np.load(path+'/'+file_name)
         else:
             self.W = np.load(file_name)
 
@@ -37,25 +42,48 @@ class Model:
     def update_weights(self, grad):
         self.W = self.W - self.alpha*(grad)
         
-    def fit(self, X, y, test_X, test_y, val_x = None, val_y = None, mode = "normal", algo="minibatch"):
+    def fit(self, X, y, test_X, test_y, val_X = None, val_y = None, mode = "normal", algo="minibatch"):
         self.W = np.random.rand((X.shape[0], 1))
+
+        train = open(self.record_cost, 'w')
+        test = open(self.record_evaluation_testing, 'w')
         
+        train.write('W0,W1,W2,W3,W4,W5,W6,W7,W8,W9,W10,W11,J\n')
+        test.write('MAE,MSE,RMSE\n')
+        
+        if self.val_flag:
+            val = open(self.record_evaluation_validation, 'w')
+            val.write('MAE,MSE,RMSE\n')
+
         if algo == "minibatch":
             minibatches = createRandomMinibatches(X, y, self.minibatch_size)
             n = len(minibatches)
-            j = 0
+
             for _ in range(self.max_iter):
                 
                 for i in range(n):
                     X, y = minibatches[i]
                     J = self.cost(X, y)
+
+                    s = make_writable(self.W)
+                    train.write(s + ',' + str(J) + '\n')
+
                     grad = self.gradient(X, y)
                     self.update_weights(grad)
 
-                    self.record_cost.append(J)
-
-                    # self.record_evaluation_validation.append(self.evaluate(val_X, val_y))
-                    self.record_evaluation_testing.append(self.evaluate(test_X, test_y))
+                    if self.val_flag:
+                        s = self.evaluate(val_X, val_y)
+                        s = make_writable(s)
+                        val.write(s + '\n')
+                    
+                    s = self.evaluate(test_X, test_y)
+                    s = make_writable(s)
+                    test.write(s + '\n')
+        
+        train.close()
+        test.close()
+        if self.val_flag:
+            val.close()
 
     def predict(self, X):
         self.pred = np.dot(self.W.T, X)
@@ -68,3 +96,4 @@ class Model:
         rmse = np.sqrt(mse)
 
         return (mae, mse, rmse)
+

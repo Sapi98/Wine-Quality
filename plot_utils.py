@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sb
+import pandas as pd
 
 palette = sb.color_palette("magma")
 
@@ -22,5 +23,9 @@ def visualizeData(data):
 
 def visualizePerformance(model):
     total_iter = np.arange(model.max_iter)
+
+    train = pd.read_csv(model.record_cost)
+    test = pd.read_csv(model.record_evaluation_testing)
+    val = pd.read_csv(model.record_evaluation_validation)
 
     plt.plot(model.record_cost, total_iter, label='Training Cost')

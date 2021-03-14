@@ -51,16 +51,18 @@ def splitData(data, train=0.7):
 
     else:
         train_X = data_array[:floor(train*n),:-1]
+        train_X = np.concatenate((np.ones((train_X.shape[0], 1)), train_X), axis=1)
         train_Y = np.reshape(data_array[:floor(train*n),-1], (train_X.shape[0], 1))
 
         test_X = data_array[floor(train * n):, :-1]
+        test_X = np.concatenate((np.ones((test_X.shape[0], 1)), test_X), axis=1)
         test_Y = np.reshape(data_array[floor(train * n):, -1], (test_X.shape[0], 1))
 
         train_data = pd.DataFrame(data_array, columns=data.columns)
 
     return (train_data, train_X, train_Y, test_X, test_Y)
 
-def createRandomMinibatches(self, X, y, minibatch_size=16):
+def createRandomMinibatches(X, y, minibatch_size=16):
     minibatches = []
     
     n = y.size // minibatch_size
@@ -74,6 +76,27 @@ def createRandomMinibatches(self, X, y, minibatch_size=16):
     minibatches.append(X[n*minibatch_size:, :], y[n*minibatch_size:, :])
 
     return minibatches
+
+def make_writable(data):
+    s = str(data[0])
+
+    for i in range(1, len(data)):
+        s += ',' + str(data[i])
+    
+    return s
+
+def generateValidation(X, y, val=0.15):
+    X, y = shuffle(X, y)
+
+    n = X.shape[0]
+
+    train_X = X[:floor((1-val)*n)]
+    train_y = np.reshape(y[:floor((1-val)*n)], (train_X.shape[0], 1))
+
+    val_X = X[floor((1-val) * n):]
+    val_y = np.reshape(y[floor((1-val) * n):], (val_X.shape[0], 1))
+
+    return (train_X, train_y, val_X, val_y)
 
 if __name__ == "__main__":
     x = [[1,2,3],[4,5,6],[7,8,9]]
