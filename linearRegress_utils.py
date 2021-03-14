@@ -59,10 +59,10 @@ class Model:
             minibatches = createRandomMinibatches(X, y, self.minibatch_size)
             n = len(minibatches)
 
-            for _ in range(self.max_iter):
+            for i in range(self.max_iter):
                 
-                for i in range(n):
-                    X, y = minibatches[i]
+                for j in range(n):
+                    X, y = minibatches[j]
                     J = self.cost(X, y)
 
                     s = make_writable(self.W)
@@ -77,8 +77,14 @@ class Model:
                         val.write(s + '\n')
                     
                     s = self.evaluate(test_X, test_y)
+                    
+                    if i % 20 == 0 and j % 10 == 0:
+                        print('Iter No.:', i, 'Minibatch No.:', j, 'Training Cost:',J,'')
+
                     s = make_writable(s)
                     test.write(s + '\n')
+
+                    
         
         train.close()
         test.close()
