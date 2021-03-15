@@ -22,10 +22,35 @@ def visualizeData(data):
     
 
 def visualizePerformance(model):
-    total_iter = np.arange(model.max_iter)
+    file_name = ''
 
-    train = pd.read_csv(model.record_cost)
-    test = pd.read_csv(model.record_evaluation_testing)
-    val = pd.read_csv(model.record_evaluation_validation)
+    if model.val_flag:
+        file_name = str(model.max_iter) + '_' + str(model.alpha) + '_' + str(model.reg) + '_' + str(model.minibatch_size) + 'plot.png'
 
-    plt.plot(model.record_cost, total_iter, label='Training Cost')
+        train = pd.read_csv(model.record_cost)
+        test = pd.read_csv(model.record_evaluation_testing)
+        val = pd.read_csv(model.record_evaluation_validation)
+
+        x = train.shape()[0]
+
+        plt.plot(x, train['MSE'], label='Training Error')
+        plt.plot(x, val['MSE'], label='Validation Error')
+        plt.plot(x, test['MSE'], label='Testing Error')
+        
+    else:
+        file_name = 'realtime_' + str(model.max_iter) + '_' + str(model.alpha) + '_' + str(model.reg) + '_' + str(model.minibatch_size) + 'plot.png'
+
+        train = pd.read_csv('realtime_' + model.record_cost)
+        test = pd.read_csv('realtime_' + model.record_evaluation_testing)
+
+        x = train.shape()[0]
+
+        plt.plot(x, train['MSE'], label='Training Error')
+        plt.plot(x, test['MSE'], label='Testing Error')
+
+    plt.xlabel('Iteration Number')
+    plt.ylabel('Error')
+    plt.legend()
+
+    plt.show()
+    plt.savefig(file_name)

@@ -20,12 +20,14 @@ class Model:
             self.record_evaluation_testing = 'realtime_' + self.record_evaluation_testing
 
     def save_weight(self, file_name="weight.npy", path=None):
+        file_name = str(self.max_iter) + '_' + str(self.alpha) + '_' + str(self.reg) + '_' + str(self.minibatch_size) + '_' + file_name
         if path != None:
             np.save(path+'/'+file_name, self.W)
         else:
             np.save(file_name, self.W)
 
     def load_weight(self, file_name="weight.npy", path=None):
+        file_name = str(self.max_iter) + '_' + str(self.alpha) + '_' + str(self.reg) + '_' + str(self.minibatch_size) + '_' + file_name
         if path != None:
             self.W = np.load(path+'/'+file_name)
         else:
