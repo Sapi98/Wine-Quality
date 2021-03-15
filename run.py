@@ -11,6 +11,7 @@ models = []
 
 def run( max_iter=100, alpha=0.01, reg=0, minibatch_size = 16, val_flag=True):
     global models
+    model = None
 
     # Load Data Set
 
@@ -33,6 +34,10 @@ def run( max_iter=100, alpha=0.01, reg=0, minibatch_size = 16, val_flag=True):
                     model.fit(train_X, train_y, test_X, test_y, val_X, val_y)
 
                     models.append(model)
+    
+    else:
+        model  = Model( max_iter, a, r, s, val_flag)
+        models = [model]
 
     # Save Model
     model.save_weight()
