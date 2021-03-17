@@ -14,6 +14,7 @@ class Model:
         self.record_evaluation_testing = str(max_iter) + '_' + str(alpha) + '_' + str(reg) + '_' + str(minibatch_size) + '_' + 'testing_record.txt'
         self.record_evaluation_validation = str(max_iter) + '_' + str(alpha) + '_' + str(reg) + '_' + str(minibatch_size) + '_' + 'val_record.txt'
         self.val_flag = val_flag
+        self.J = 0
 
         if not val_flag:
             self.record_cost = 'realtime_' + self.record_cost
@@ -38,17 +39,29 @@ class Model:
         return res
 
     def gradient(self,X, y):
-        grad = (2 / X.shape[0]) * np.sum(-1*np.dot(X.T, y) + np.dot(X.T, X) * self.W) + 2 * self.reg * self.W
+        grad = (2 / X.shape[0]) * np.sum(-1*np.dot(X.T, y) + np.dot(np.dot(X, X.T), self.W) + self.reg * self.W)
         return grad
 
     def update_weights(self, grad):
         self.W = self.W - self.alpha*(grad)
+
+    def gradient_descent(self, X, y, train_file=None):
+        self.J = self.cost(X, y)
+
+        s = make_writable(self.W)
+        train_file.write(s + ',' + str(self.J) + '\n')
+
+        grad = self.gradient(X, y)
+        self.update_weights(grad)
         
     def fit(self, X, y, test_X, test_y, val_X = None, val_y = None, mode = "normal", algo="minibatch"):
-        self.W = np.random.rand((X.shape[0], 1))
+        self.W = np.random.rand(X.shape[0], 1)
 
         train = open(self.record_cost, 'w')
         test = open(self.record_evaluation_testing, 'w')
+        val = None
+        minibatches = None
+        n = None
         
         train.write('W0,W1,W2,W3,W4,W5,W6,W7,W8,W9,W10,W11,J\n')
         test.write('MAE,MSE,RMSE\n')
@@ -61,32 +74,30 @@ class Model:
             minibatches = createRandomMinibatches(X, y, self.minibatch_size)
             n = len(minibatches)
 
-            for i in range(self.max_iter):
-                
+        for i in range(self.max_iter):
+            
+            if algo == 'minibatch':
                 for j in range(n):
                     X, y = minibatches[j]
-                    J = self.cost(X, y)
 
-                    s = make_writable(self.W)
-                    train.write(s + ',' + str(J) + '\n')
+                    self.gradient_descent(X, y, train)
 
-                    grad = self.gradient(X, y)
-                    self.update_weights(grad)
-
-                    if self.val_flag:
-                        s = self.evaluate(val_X, val_y)
-                        s = make_writable(s)
-                        val.write(s + '\n')
+            elif algo == 'batch':
+                self.gradient_descent(X, y, train)                    
                     
-                    s = self.evaluate(test_X, test_y)
+            if self.val_flag:
+                s = self.evaluate(val_X, val_y)
+                s = make_writable(s)
+                val.write(s + '\n')
                     
-                    if i % 20 == 0 and j % 10 == 0:
-                        print('Iter No.:', i, 'Minibatch No.:', j, 'Training Cost:',J,'')
+            s = self.evaluate(test_X, test_y)
+                
+            s = make_writable(s)
+            test.write(s + '\n')
 
-                    s = make_writable(s)
-                    test.write(s + '\n')
+            if i % 5 == 0:
+                print('Iter No.:', i, 'Training Cost:',self.J)
 
-                    
         
         train.close()
         test.close()
