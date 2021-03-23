@@ -5,8 +5,10 @@ from utils import *
 data_path = 'winequality-red.csv'
 result_path = 'result.txt'
 max_iter = 100
-alpha = [0.01, 0.03, 0.05, 0.1]
-reg = [0, 0.1, 0.3, 0.5, 0.7]
+#alpha = [0.01, 0.03, 0.05, 0.1]
+alpha = 0.00001
+#reg = [0, 0.1, 0.3, 0.5, 0.7]
+reg = 0
 val_flag = False
 algo='batch'
 models = []
@@ -28,6 +30,11 @@ def run( max_iter=100, alpha=0.01, reg=0, minibatch_size = 16, val_flag=True, al
     # Training Data Visualization
     #visualizeData(train_data)
     #print('Visualize Data Done')
+
+    #Feature Normalization
+    train_X = featureNormalization(train_X)
+    print(train_X)
+    test_X = featureNormalization(test_X)
 
     # Trigger Linear Regression
     print('Linear Regression Triggered')

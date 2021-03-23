@@ -17,7 +17,7 @@ def saveResults(path, result):
     def __init__(self):
         pass
 """
-def featureNormalization(self, X):
+def featureNormalization(X):
     mean = X.mean(axis=0)
     sd = X.std(axis=0)
     X = X - mean / sd

@@ -35,11 +35,14 @@ class Model:
             self.W = np.load(file_name)
 
     def cost(self, X, y):
-        res = (1/X.shape[0])*np.sum(np.square(y - np.dot(self.W.T, X))) + self.reg * np.dot(self.W.T, self.W)
+        #print(X.shape, y.shape, self.W.shape)
+        res = (1/X.shape[0])*np.sum(np.square(y - np.dot(X, self.W))) + self.reg * np.dot(self.W.T, self.W)
         return res
 
     def gradient(self,X, y):
-        grad = (2 / X.shape[0]) * np.sum(-1*np.dot(X.T, y) + np.dot(np.dot(X, X.T), self.W) + self.reg * self.W)
+        #print(X.shape, y.shape, self.W.shape)
+        #grad = (1 / X.shape[0]) * np.sum(-1*np.dot(X.T, y) + np.dot(np.dot(X.T, X), self.W) + self.reg * self.W)
+        grad = (1 / X.shape[0]) * (np.dot(X.T, (y - np.dot(X, self.W))) + self.reg * self.W)
         return grad
 
     def update_weights(self, grad):
@@ -55,7 +58,7 @@ class Model:
         self.update_weights(grad)
         
     def fit(self, X, y, test_X, test_y, val_X = None, val_y = None, mode = "normal", algo="minibatch"):
-        self.W = np.random.rand(X.shape[0], 1)
+        self.W = np.random.rand(X.shape[1], 1)
 
         train = open(self.record_cost, 'w')
         test = open(self.record_evaluation_testing, 'w')
@@ -64,11 +67,11 @@ class Model:
         n = None
         
         train.write('W0,W1,W2,W3,W4,W5,W6,W7,W8,W9,W10,W11,J\n')
-        test.write('MAE,MSE,RMSE\n')
+        test.write('MAE,MSE,RMSE,Pred\n')
         
         if self.val_flag:
             val = open(self.record_evaluation_validation, 'w')
-            val.write('MAE,MSE,RMSE\n')
+            val.write('MAE,MSE,RMSE,Pred\n')
 
         if algo == "minibatch":
             minibatches = createRandomMinibatches(X, y, self.minibatch_size)
@@ -105,7 +108,7 @@ class Model:
             val.close()
 
     def predict(self, X):
-        self.pred = np.dot(self.W.T, X)
+        self.pred = np.dot(X, self.W)
 
     def evaluate(self, X, y):
         self.predict(X)
@@ -114,5 +117,5 @@ class Model:
         mse = np.sum(np.square(y - self.pred)) / X.shape[0]
         rmse = np.sqrt(mse)
 
-        return (mae, mse, rmse)
+        return (mae, mse, rmse, self.pred)
 
