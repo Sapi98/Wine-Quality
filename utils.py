@@ -17,10 +17,10 @@ def saveResults(path, result):
     def __init__(self):
         pass
 """
-def featureNormalization(X):
+def featureNormalization(X, epsilon=1e-8):
     mean = X.mean(axis=0)
-    sd = X.std(axis=0)
-    X = X - mean / sd
+    sd = X.std(axis=0) + epsilon
+    X = (X - mean) / sd
 
     return X
 
@@ -29,20 +29,23 @@ def shuffle(X, y=None):
 
     X = X[p,:]
     
-    if y != None:
+    if type(y) != type(None):
         y = np.reshape(y[p], (X.shape[0], 1))
     
     return X, y
 
-def splitData(data, train=0.7):
+def splitData(data, y=None, train=0.7):
     data_array = np.array(data)[1:]
+    b = np.ones((data_array.shape[0], 1))
+    data_array = np.concatenate((b,data_array), axis=1)
+    #print(data_array)
     train_data = None
     
-    X, y = shuffle(data_array)
+    X, y = shuffle(data_array, y)
 
     n = X.shape[0]
 
-    if y != None:
+    if type(y) != type(None):
         train_X = X[:floor(train*n)]
         train_Y = np.reshape(y[:floor(train*n)], (train_X.shape[0], 1))
 

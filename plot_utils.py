@@ -22,39 +22,48 @@ def visualizeData(data):
     
 
 def visualizePerformance(model):
-    file_name = ''
+    file_name = 'Plots/'
 
     if model.val_flag:
-        file_name = str(model.max_iter) + '_' + str(model.alpha) + '_' + str(model.reg) + '_' + str(model.minibatch_size) + 'plot.png'
+        file_name += str(model.max_iter) + '_' + str(model.alpha) + '_' + str(model.reg) + '_' + str(model.minibatch_size) + 'plot.png'
 
         train = pd.read_csv(model.record_cost)
         test = pd.read_csv(model.record_evaluation_testing)
         val = pd.read_csv(model.record_evaluation_validation)
 
-        x = train.shape[0]
+        a1 = np.array(train['J'])[1:]
+        a2 = np.array(test['MSE'])[1:]
+        a3 = np.array(val['MSE'])[1:]
 
-        plt.plot(x, train['MSE'], label='Training Error')
-        plt.plot(x, val['MSE'], label='Validation Error')
-        plt.plot(x, test['MSE'], label='Testing Error')
+        x = np.arange(0, a1.shape[0])
+        y = np.arange(0, a2.shape[0])
+        z = np.arange(0, a3.shape[0])
+
+        plt.plot(x, a1, label='Training Error')
+        plt.plot(z, a3, label='Validation Error')
+        plt.plot(y, a2, label='Testing Error')
             
     else:
-        file_name = str(model.max_iter) + '_' + str(model.alpha) + '_' + str(model.reg) + '_' + str(model.minibatch_size) + 'plot.png'
+        file_name += str(model.max_iter) + '_' + str(model.alpha) + '_' + str(model.reg) + '_' + str(model.minibatch_size) + 'plot.png'
 
         train = pd.read_csv(model.record_cost)
         test = pd.read_csv(model.record_evaluation_testing)
 
         #print(train)
-        x = np.arange(0, train.shape[0]-1)
-        y = np.arange(0, test.shape[0]-1)
-        print(np.array(train['J'])[1:])
-        print(np.array(test['MSE'])[1:])
+        a1 = np.array(train['J'])[1:]
+        a2 = np.array(test['MSE'])[1:]
+        x = np.arange(0, a1.shape[0])
+        y = np.arange(0, a2.shape[0])
+        #print(a1)
+        #print(test)
 
-        plt.plot(x, np.array(train['J'])[1:], label='Training Error')
-        plt.plot(y, np.array(test['MSE'])[1:], label='Testing Error')
+        plt.plot(x, a1, label='Training Error')
+        plt.plot(y, a2, label='Testing Error')
 
     plt.xlabel('Iteration Number')
     plt.ylabel('Error')
     plt.legend()
-
-    plt.show()
-    plt.savefig(file_name)
+    plt.savefig(file_name, dpi=600)
+    plt.clf()
+    #plt.show()
+    

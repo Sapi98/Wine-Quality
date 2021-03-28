@@ -3,13 +3,12 @@ from plot_utils import *
 from utils import *
 
 data_path = 'winequality-red.csv'
-result_path = 'result.txt'
-max_iter = 100
-#alpha = [0.01, 0.03, 0.05, 0.1]
-alpha = 0.00001
-#reg = [0, 0.1, 0.3, 0.5, 0.7]
-reg = 0
-val_flag = False
+max_iter = 1000
+alpha = [0.01, 0.03, 0.05, 0.07, 0.1]
+#alpha = 0.1
+reg = [0, 0.01, 0.05, 0.2, 0.3]
+#reg = 0
+val_flag = True
 algo='batch'
 models = []
 
@@ -19,37 +18,41 @@ def run( max_iter=100, alpha=0.01, reg=0, minibatch_size = 16, val_flag=True, al
     model = None
 
     # Load Data Set
-
     data = loadData(data_path)
+    data_array = np.array(data)[1:]
     print('Loading Data Done')
+
+    #Feature Normalization
+    data_array[:,:-1] = featureNormalization(data_array[:,:-1])
+    #print(data_array)
     
     # Make Train-Test Split
-    train_data, train_X, train_y, test_X, test_y = splitData(data, 0.80)
+    train_data, train_X, train_y, test_X, test_y = splitData(data_array[:,:-1], data_array[:,-1], 0.80)
     print('Data Spliting Done')
 
     # Training Data Visualization
-    #visualizeData(train_data)
-    #print('Visualize Data Done')
-
-    #Feature Normalization
-    train_X = featureNormalization(train_X)
-    print(train_X)
-    test_X = featureNormalization(test_X)
+    visualizeData(train_data)
+    print('Visualize Data Done')
 
     # Trigger Linear Regression
     print('Linear Regression Triggered')
     if val_flag:
+        print('Mode : Validation')
         for a in alpha:
             for r in reg:
-                for s in minibatch_size:
-                    train_X, train_y, val_X, val_y = generateValidation(train_X, train_y)
-                    model  = Model( max_iter, a, r, s, val_flag)
-                    model.fit(train_X, train_y, test_X, test_y, val_X, val_y, algo=algo)
+                #for s in minibatch_size:
+                print('='*60)
+                print('Alpha :', a, 'Regularization parameter Lambda :', r)
+                print('='*60)
+                train_X, train_y, val_X, val_y = generateValidation(train_X, train_y)
+                model  = Model( max_iter, a, r, val_flag)
+                model.fit(train_X, train_y, test_X, test_y, val_X, val_y, algo=algo)
 
-                    models.append(model)
+                models.append(model)
+                print('='*60)
     
     else:
-        model  = Model( max_iter, alpha, reg, val_flag=val_flag)
+        model  = Model(max_iter, alpha, reg, val_flag=val_flag)
         print('Model is built')
         print('Fitting model triggered')
         model.fit(train_X, train_y, test_X, test_y, algo=algo)
@@ -59,13 +62,14 @@ def run( max_iter=100, alpha=0.01, reg=0, minibatch_size = 16, val_flag=True, al
     print('Training Model Done')
 
     # Save Model
-    model.save_weight()
+    for model in models:
+        model.save_weight()
     print('Weights Saved')
     
-    # Save Results
 
     # Visualize results (Training Accuracy, Validation Accuracy and Testing Accuracy)
     for model in models:
         visualizePerformance(model)
-
+    print('Visualization Done')
+    
 run(max_iter, alpha, reg, val_flag=val_flag, algo=algo)
