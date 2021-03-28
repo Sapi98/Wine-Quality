@@ -1,1 +1,11 @@
 winequality-red.csv
+__pycache__
+data_0.png
+data_1.png
+data_2.png
+data_last.png
+linearRegress_utils.pyc
+utils.pyc
+.vscode
+Results
+Weights
