@@ -9,3 +9,6 @@ utils.pyc
 .vscode
 Results
 Weights
+Plots
+configuration_records.csv
+data.csv

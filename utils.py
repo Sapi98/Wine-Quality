@@ -3,6 +3,8 @@ import pandas as pd
 from math import floor, ceil
 import pandas as pd
 
+np.random.seed(4)
+
 def loadData(path):
     #data = np.genfromtxt(path, delimiter=',')
     data = pd.read_csv(path)
@@ -76,7 +78,7 @@ def createRandomMinibatches(X, y, minibatch_size=16):
         minibatch = (X[i*minibatch_size:(i+1)*minibatch_size, :], y[i*minibatch_size:(i+1)*minibatch_size, :])
         minibatches.append(minibatch)
 
-    minibatches.append(X[n*minibatch_size:, :], y[n*minibatch_size:, :])
+    minibatches.append((X[n*minibatch_size:, :], y[n*minibatch_size:, :]))
 
     return minibatches
 

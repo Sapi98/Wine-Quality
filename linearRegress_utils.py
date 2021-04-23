@@ -1,23 +1,32 @@
 import numpy as np
 from utils import *
 
+np.random.seed(4)
 base_path_results = 'Results/'
 base_path_weights = 'Weights/'
 
 class Model:
     
-    def __init__(self, max_iter=100, alpha=0.01, reg=0, minibatch_size = 16, val_flag=True):
+    def __init__(self, max_iter=100, alpha=0.01, reg=0, minibatch_size = 16, algo="minibatch", val_flag=True):
         self.W = None
         self.max_iter = max_iter
         self.alpha = alpha
         self.minibatch_size = minibatch_size
         self.reg = reg
-        self.record_cost = str(max_iter) + '_' + str(alpha) + '_' + str(reg) + '_' + str(minibatch_size) + '_' + 'cost_record.csv'
+        self.record_cost = algo + '_' + str(max_iter) + '_' + str(alpha) + '_' + str(reg)
+        self.record_evaluation_testing = algo + '_' + str(max_iter) + '_' + str(alpha) + '_' + str(reg) 
+        self.record_evaluation_validation = algo + '_' + str(max_iter) + '_' + str(alpha) + '_' + str(reg) 
+        if algo == 'minibatch':
+            self.record_cost += '_' + str(minibatch_size)
+            self.record_evaluation_testing += '_' + str(minibatch_size) 
+            self.record_evaluation_validation += '_' + str(minibatch_size) 
+        self.record_cost += '_' + 'cost_record.csv'
+        self.record_evaluation_testing += '_' + 'testing_record.csv'
+        self.record_evaluation_validation += '_' + 'val_record.csv'
         self.pred = None
-        self.record_evaluation_testing = str(max_iter) + '_' + str(alpha) + '_' + str(reg) + '_' + str(minibatch_size) + '_' + 'testing_record.csv'
-        self.record_evaluation_validation = str(max_iter) + '_' + str(alpha) + '_' + str(reg) + '_' + str(minibatch_size) + '_' + 'val_record.csv'
         self.val_flag = val_flag
         self.J = 0
+        self.algo = algo
 
         if not val_flag:
             self.record_cost = 'realtime_' + self.record_cost
@@ -86,33 +95,36 @@ class Model:
             val = open(self.record_evaluation_validation, 'w')
             val.write('MAE,MSE,RMSE\n')
 
-        if algo == "minibatch":
+        if self.algo == "minibatch":
             minibatches = createRandomMinibatches(X, y, self.minibatch_size)
-            n = len(minibatches)
+            #n = len(minibatches)
 
         for i in range(self.max_iter):
             
-            if algo == 'minibatch':
-                for j in range(n):
-                    X, y = minibatches[j]
-
+            if self.algo == 'minibatch':
+                #for j in range(n):
+                 #   X, y = minibatches[j]
+                for X, y in minibatches:
                     self.gradient_descent(X, y, train)
+                    s = self.evaluate(test_X, test_y)
+                
+                    s = make_writable(s)
+                    test.write(s + '\n')
 
-            elif algo == 'batch':
-                self.gradient_descent(X, y, train)                    
+            elif self.algo == 'batch':
+                self.gradient_descent(X, y, train) 
+                s = self.evaluate(test_X, test_y)
+                
+                s = make_writable(s)
+                test.write(s + '\n')                   
                     
             if self.val_flag:
                 s = self.evaluate(val_X, val_y)
                 s = make_writable(s)
                 val.write(s + '\n')
-                    
-            s = self.evaluate(test_X, test_y)
-                
-            s = make_writable(s)
-            test.write(s + '\n')
 
-            if i % 100 == 0:
-                print('Iter No.:', i, 'Training Cost:',self.J)
+            if i % 10 == 0:
+                print('Epoch No.:', i, 'Training Cost:',self.J)
 
         
         train.close()

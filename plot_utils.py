@@ -44,7 +44,12 @@ def visualizePerformance(model):
         plt.plot(y, a2, label='Testing Error')
             
     else:
-        file_name += str(model.max_iter) + '_' + str(model.alpha) + '_' + str(model.reg) + '_' + str(model.minibatch_size) + 'plot.png'
+        file_name += model.algo + '_' + str(model.max_iter) + '_' + str(model.alpha) + '_' + str(model.reg) 
+
+        if model.algo == 'minibatch':
+            file_name += '_' + str(model.minibatch_size) 
+        
+        file_name += 'plot.png'
 
         train = pd.read_csv(model.record_cost)
         test = pd.read_csv(model.record_evaluation_testing)
